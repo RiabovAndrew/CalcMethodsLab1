@@ -6,12 +6,13 @@ class method_runge_kutta:
         self.b = 1
         self.x = float(x_0)
         self.y = float(y_0)
+        self.epsilon = 0.001
 
     def info(self):
         print(self.h, self.x, self.y)
 
     def function(self, x, y):
-        return float(x)
+        return float(x*x + 3*y - 5)
 
     def fi_0(self, h):
         return h*self.function(self.x, self.y)
@@ -48,16 +49,36 @@ class method_runge_kutta:
         y_h = self.y_i(self.h)
         return (y_h2 - y_h)/(pow(2, 3) - 1)
 
-mrk = method_runge_kutta(0, 2)
+    def delta(self):
+        return self.b - self.x
 
-print(mrk.epsilon_h())
-print(mrk.epsilon_h2())
+mrk = method_runge_kutta(1, 2)
 
-# while(mrk.a < mrk.b):
-#     print(mrk.y_i(mrk.h))
+
+
+
+# while(mrk.x < mrk.b):
+#     if abs(mrk.epsilon_h2()) > mrk.epsilon:
+#         mrk.h = mrk.h / 2
+#         continue
+#     if abs(mrk.epsilon_h() <= mrk.epsilon):
+#         mrk.h = mrk.h * 2
+#         #print(mrk.h)
 #     mrk.y = mrk.y_i(mrk.h)
+#     print(mrk.y)
 #     mrk.x += mrk.h
-#     mrk.a += mrk.h
+#     #print(mrk.x)
+#     if abs(mrk.delta()) < 0.000001:
+#         break
+#     if mrk.h > mrk.delta(): mrk.h = mrk.delta()
+
+while(mrk.x <= mrk.b):
+    mrk.y = mrk.y_i(mrk.h)
+    print(mrk.y)
+    mrk.x += mrk.h
+
+
+
 
 
 
