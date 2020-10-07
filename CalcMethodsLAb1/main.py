@@ -26,8 +26,9 @@ class method_runge_kutta:
         print(self.h, self.x, self.y)
 
     def function(self, x, y):
-        # return float(1.2*pow(x, 3) + 3.1*x*y - 2.2)
-        return float(x + y)
+        return float(1.2*pow(x, 3) + 3.1*x*y - 2.2)
+        # return float(0.9*x*y + 3.5*y - 2.1)
+        # return float(x*y)
 
     def __fi_0(self, h):
         return h*self.function(self.x, self.y)
@@ -36,7 +37,7 @@ class method_runge_kutta:
         return h*self.function(self.combinate(self.x, h/2), self.combinate(self.y, self.__fi_0(h)/2))
     
     def __fi_2(self, h):
-        return h*self.function(self.combinate(self.x, h), self.combinate(self.combinate(self.y, self.__fi_0(h)), 2*self.__fi_1(h)))
+        return h*self.function(self.combinate(self.x, h), self.combinate(self.y, -self.__fi_0(h) + 2*self.__fi_1(h)))
 
     def y_i(self, h):
         return self.combinate(self.y, (self.__fi_0(h) + 4*self.__fi_1(h) + self.__fi_2(h))/6)
@@ -69,27 +70,32 @@ class method_runge_kutta:
         else: return self.to - self.x
 
 
-mrk = method_runge_kutta(0, 1, 1)
+mrk = method_runge_kutta(0, 2, 1)
 drawing = drawing()
 
 print("f(", mrk.x, ") = \t", mrk.y, ";\t  step =", mrk.h)
-while(mrk.compare()):
+while (mrk.delta() >= 0.000001):
+    if mrk.h > mrk.delta(): mrk.h = mrk.delta()
     if abs(mrk.epsilon_h2()) > mrk.epsilon:
         mrk.h = mrk.h / 2
         continue
     mrk.y = mrk.y_i(mrk.h)
     mrk.x = mrk.combinate(mrk.x, mrk.h)
-    drawing.Y.append(mrk.y)
-    drawing.X.append(mrk.x)
+    # drawing.Y.append(mrk.y)
+    # drawing.X.append(mrk.x)
     print("f(", mrk.x, ") = \t", mrk.y, ";\t  step =", mrk.h)
     if abs(mrk.epsilon_h() <= mrk.epsilon):
         mrk.h = mrk.h * 2    
-    if abs(mrk.delta()) < 0.000001:
-        break
-    if mrk.h > mrk.delta(): mrk.h = mrk.delta()
+
+# while (mrk.delta() >= 0.000001):
+#     if mrk.h > mrk.delta(): mrk.h = mrk.delta()
+#     mrk.y = mrk.y_i(mrk.h)
+#     mrk.x = mrk.combinate(mrk.x, mrk.h)
+#     print("f(", mrk.x, ") = \t", mrk.y, ";\t  step =", mrk.h)
+
 
 
 
 plt.plot(drawing.X, drawing.Y, linewidth = 1.0)
 plt.ylabel('some numbers')
-plt.show()
+#plt.show()
