@@ -23,8 +23,8 @@ class method_runge_kutta:
         print(self.h, self.x, self.y)
 
     def function(self, x, y):
-        return float(1.2*pow(x, 3) + 3.1*x*y - 2.2)
-        # return float(0.9*x*y + 3.5*y - 2.1)
+        # return float(1.2*pow(x, 3) + 3.1*x*y - 2.2)
+        return float(0.9*x*y + 3.5*y - 2.1)
         # return float(x*y)
 
     def __fi_0(self, h):
@@ -71,16 +71,16 @@ class drawing(method_runge_kutta):
     def __init__(self):
         self.X_I = []
         self.Y_I = []
-        self.X_F = []
-        self.Y_F = []
 
 
 
-mrk = method_runge_kutta(1, 0.2, 0)
+mrk = method_runge_kutta(100, 0.2, -100)
 drawing = drawing()
 
 
 print("f(", mrk.x, ") = \t", mrk.y, ";\t  step =", mrk.h)
+drawing.Y_I.append(mrk.y)
+drawing.X_I.append(mrk.x)
 while (mrk.delta() >= 0.000001):
     if mrk.h > mrk.delta(): mrk.h = mrk.delta()
     if abs(mrk.epsilon_h2()) > mrk.epsilon:
@@ -95,7 +95,10 @@ while (mrk.delta() >= 0.000001):
         mrk.h = mrk.h * 2
 
 
-
-plt.plot(drawing.X_I, drawing.Y_I, label="Integral", linewidth = 1.0)
-plt.ylabel('F[x, f(x)]')
+plt.xlabel("X")
+plt.title("Графики приближенного и точного решения")
+plt.plot(drawing.X_I, drawing.Y_I,'r-o', label="Integral", linewidth = 1.0)
+plt.ylabel("F[x, f(x)]")
+plt.grid(True)
+plt.legend()
 plt.show()
