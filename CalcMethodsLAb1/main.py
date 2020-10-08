@@ -1,5 +1,11 @@
+import numpy as np
 from scipy.integrate import odeint
 import matplotlib.pyplot as plt
+
+def model(x, y, t):
+    dydt = y
+    return dydt
+
 
 class drawing:
     def __init__(self):
@@ -26,9 +32,9 @@ class method_runge_kutta:
         print(self.h, self.x, self.y)
 
     def function(self, x, y):
-        return float(1.2*pow(x, 3) + 3.1*x*y - 2.2)
+        # return float(1.2*pow(x, 3) + 3.1*x*y - 2.2)
         # return float(0.9*x*y + 3.5*y - 2.1)
-        # return float(x*y)
+        return float(x*y)
 
     def __fi_0(self, h):
         return h*self.function(self.x, self.y)
@@ -73,6 +79,27 @@ class method_runge_kutta:
 mrk = method_runge_kutta(0, 2, 1)
 drawing = drawing()
 
+def model(z,t):
+    x = z[0]
+    y = z[1]
+    dydt = -y + 1.0 + x
+    return dydt
+
+# initial condition
+z0 = [0, 2]
+
+# time points
+t = np.linspace(0,5)
+
+# solve ODE
+y = odeint(model, z0, t)
+
+# plot results
+plt.plot(t,y)
+plt.xlabel('time')
+plt.ylabel('y(t)')
+plt.show()
+
 print("f(", mrk.x, ") = \t", mrk.y, ";\t  step =", mrk.h)
 while (mrk.delta() >= 0.000001):
     if mrk.h > mrk.delta(): mrk.h = mrk.delta()
@@ -81,11 +108,11 @@ while (mrk.delta() >= 0.000001):
         continue
     mrk.y = mrk.y_i(mrk.h)
     mrk.x = mrk.combinate(mrk.x, mrk.h)
-    # drawing.Y.append(mrk.y)
-    # drawing.X.append(mrk.x)
+    drawing.Y.append(mrk.y)
+    drawing.X.append(mrk.x)
     print("f(", mrk.x, ") = \t", mrk.y, ";\t  step =", mrk.h)
     if abs(mrk.epsilon_h() <= mrk.epsilon):
-        mrk.h = mrk.h * 2    
+        mrk.h = mrk.h * 2
 
 # while (mrk.delta() >= 0.000001):
 #     if mrk.h > mrk.delta(): mrk.h = mrk.delta()
@@ -98,4 +125,4 @@ while (mrk.delta() >= 0.000001):
 
 plt.plot(drawing.X, drawing.Y, linewidth = 1.0)
 plt.ylabel('some numbers')
-#plt.show()
+# plt.show()
