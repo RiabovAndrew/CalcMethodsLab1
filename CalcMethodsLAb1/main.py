@@ -155,8 +155,6 @@ class table:
         self.X_A = []
         self.Step_A = []
         self.Y_A = []
-        self.Error_A = []
-
 
 # Инициализация нужных переменных
 mrk = method_runge_kutta(1, 0.2, 0, 0.5)
@@ -183,7 +181,6 @@ while (mrk.delta() >= 0.000001):
     table.X_I.append(mrk.x)
     table.Step_I.append(mrk.h)
     table.Y_I.append(mrk.y)
-    # tbl.add_row(["\033[33m" + str(mrk.x) + "\033[0m", "\033[33m" + str(mrk.h) + "\033[0m", "\033[33m" + str(mrk.y) + "\033[0m", "", ""])
     if abs(mrk.epsilon_h() <= mrk.epsilon):
         mrk.h = mrk.h * 2
 
@@ -201,14 +198,8 @@ while (mrk.delta() >= 0.000001):
 #     if abs(am.epsilon_h() <= am.epsilon):
 #         am.h = am.h * 2
 
-# am = accurate_method(1, 0.2, 0, 0.01)
-# while (am.delta() >= 0.000001):
-#     if am.h > am.delta():
-#         am.h = am.delta()
-#     am.y = am.y_i(am.h)
-#     am.x = am.combinate(am.x, am.h)
-#     drawing.Y_A.append(am.y)
-#     drawing.X_A.append(am.x)
+
+
 
 
 
@@ -230,6 +221,26 @@ for element in table.X_A:
     tbl.add_row(["\033[33m" + str(element) + "\033[0m", "\033[33m" + str(table.Step_A[i]) + "\033[0m", "\033[33m" + str(table.Y_A[i]) + "\033[0m"])
     i += 1
 print(tbl)
+tbl = PrettyTable()
+
+am = accurate_method(1, 0.2, 0, 0.01)
+while (am.delta() >= 0.000001):
+    if am.h > am.delta():
+        am.h = am.delta()
+    am.y = am.y_i(am.h)
+    am.x = round(am.combinate(am.x, am.h), 2)
+    table.X_A.append(am.x)
+    table.Step_A.append(am.h)
+    table.Y_A.append(am.y)
+
+tbl.field_names = ["\033[36mX\033[0m", "\033[36mШаг\033[0m", "\033[36mНеточный Y\033[0m", "\033[36mТочный Y\033[0m", "\033[36mПогрешность\033[0m"]
+
+for element in table.X_I:
+    print(element)
+    i = table.X_A.index(element)
+    i2 = table.X_I.index(element)
+    tbl.add_row(["\033[33m" + str(element) + "\033[0m", "\033[33m" + str(table.Step_I[i2]) + "\033[0m", "\033[33m" + str(table.Y_I[i2]) + "\033[0m", "\033[33m" + str(table.Y_A[i]) + "\033[0m", "\033[33m" + str(table.Y_I[i2] - table.Y_A[i]) + "\033[0m"])
+
 
 # am = accurate_method(1, 0.2, 0, 0.01)
 # drawing.Y_A.append(am.y)
@@ -249,7 +260,4 @@ plt.plot(drawing.X_A, drawing.Y_A, 'b', label="Accurate", linewidth=1.0)
 plt.ylabel("F[x, f(x)]")
 plt.grid(True)
 plt.legend()
-
-
-
 plt.show()
