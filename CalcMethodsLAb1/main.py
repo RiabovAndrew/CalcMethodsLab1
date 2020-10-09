@@ -184,24 +184,19 @@ while (mrk.delta() >= 0.000001):
     if abs(mrk.epsilon_h() <= mrk.epsilon):
         mrk.h = mrk.h * 2
 
-# while (am.delta() >= 0.000001):
-#     if am.h > am.delta():
-#         am.h = am.delta()
-#     if abs(am.epsilon_h2()) > am.epsilon:
-#         am.h = am.h / 2
-#         continue
-#     am.y = am.y_i(am.h)
-#     am.x = am.combinate(am.x, am.h)
-#     table.X_A.append(am.x)
-#     table.Step_A.append(am.h)
-#     table.Y_A.append(am.y)
-#     if abs(am.epsilon_h() <= am.epsilon):
-#         am.h = am.h * 2
-
-
-
-
-
+while (am.delta() >= 0.000001):
+    if am.h > am.delta():
+        am.h = am.delta()
+    if abs(am.epsilon_h2()) > am.epsilon:
+        am.h = am.h / 2
+        continue
+    am.y = am.y_i(am.h)
+    am.x = am.combinate(am.x, am.h)
+    table.X_A.append(am.x)
+    table.Step_A.append(am.h)
+    table.Y_A.append(am.y)
+    if abs(am.epsilon_h() <= am.epsilon):
+        am.h = am.h * 2
 
 
 
@@ -236,22 +231,21 @@ while (am.delta() >= 0.000001):
 tbl.field_names = ["\033[36mX\033[0m", "\033[36mШаг\033[0m", "\033[36mНеточный Y\033[0m", "\033[36mТочный Y\033[0m", "\033[36mПогрешность\033[0m"]
 
 for element in table.X_I:
-    print(element)
     i = table.X_A.index(element)
     i2 = table.X_I.index(element)
     tbl.add_row(["\033[33m" + str(element) + "\033[0m", "\033[33m" + str(table.Step_I[i2]) + "\033[0m", "\033[33m" + str(table.Y_I[i2]) + "\033[0m", "\033[33m" + str(table.Y_A[i]) + "\033[0m", "\033[33m" + str(table.Y_I[i2] - table.Y_A[i]) + "\033[0m"])
+print(tbl)
 
-
-# am = accurate_method(1, 0.2, 0, 0.01)
-# drawing.Y_A.append(am.y)
-# drawing.X_A.append(am.x)
-# while (am.delta() >= 0.000001):
-#     if am.h > am.delta():
-#         am.h = am.delta()
-#     am.y = am.y_i(am.h)
-#     am.x = am.combinate(am.x, am.h)
-#     drawing.Y_A.append(am.y)
-#     drawing.X_A.append(am.x)
+am = accurate_method(1, 0.2, 0, 0.01)
+drawing.Y_A.append(am.y)
+drawing.X_A.append(am.x)
+while (am.delta() >= 0.000001):
+    if am.h > am.delta():
+        am.h = am.delta()
+    am.y = am.y_i(am.h)
+    am.x = am.combinate(am.x, am.h)
+    drawing.Y_A.append(am.y)
+    drawing.X_A.append(am.x)
 
 plt.xlabel("X")
 plt.title("Графики приближенного и точного решения")
