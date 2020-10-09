@@ -1,7 +1,10 @@
 import numpy as np
 from prettytable import PrettyTable
-from scipy.integrate import odeint
 import matplotlib.pyplot as plt
+from config import x_0
+from config import y_0
+from config import h
+from config import to
 
 class accurate_method:
 
@@ -26,7 +29,6 @@ class accurate_method:
     def function(self, x, y):
         return float(1.2*pow(x, 3) + 3.1*x*y - 2.2)
         # return float(0.9*x*y + 3.5*y - 2.1)
-        # return float(x*y)
 
     def __fi_0(self, h):
         return h*self.function(self.x, self.y)
@@ -94,7 +96,6 @@ class method_runge_kutta:
     def function(self, x, y):
         return float(1.2*pow(x, 3) + 3.1*x*y - 2.2)
         # return float(0.9*x*y + 3.5*y - 2.1)
-        # return float(x*y)
 
     def __fi_0(self, h):
         return h*self.function(self.x, self.y)
@@ -156,9 +157,10 @@ class table:
         self.Step_A = []
         self.Y_A = []
 
+
 # Инициализация нужных переменных
-mrk = method_runge_kutta(1, 0.2, 0, 0.5)
-am = accurate_method(1, 0.2, 0, 0.5)
+mrk = method_runge_kutta(x_0(), y_0(), to(), h())
+am = accurate_method(x_0(), y_0(), to(), h())
 table = table()
 drawing = drawing()
 tbl = PrettyTable()
@@ -184,7 +186,7 @@ while (mrk.delta() >= 0.000001):
     if abs(mrk.epsilon_h() <= mrk.epsilon):
         mrk.h = mrk.h * 2
 
-while (am.delta() >= 0.000001):
+while am.delta() >= 0.000001:
     if am.h > am.delta():
         am.h = am.delta()
     if abs(am.epsilon_h2()) > am.epsilon:
@@ -218,7 +220,7 @@ for element in table.X_A:
 print(tbl)
 tbl = PrettyTable()
 
-am = accurate_method(1, 0.2, 0, 0.01)
+am = accurate_method(x_0(), y_0(), to(), h())
 while (am.delta() >= 0.000001):
     if am.h > am.delta():
         am.h = am.delta()
@@ -233,10 +235,10 @@ tbl.field_names = ["\033[36mX\033[0m", "\033[36mШаг\033[0m", "\033[36mНет�
 for element in table.X_I:
     i = table.X_A.index(element)
     i2 = table.X_I.index(element)
-    tbl.add_row(["\033[33m" + str(element) + "\033[0m", "\033[33m" + str(table.Step_I[i2]) + "\033[0m", "\033[33m" + str(table.Y_I[i2]) + "\033[0m", "\033[33m" + str(table.Y_A[i]) + "\033[0m", "\033[33m" + str(table.Y_I[i2] - table.Y_A[i]) + "\033[0m"])
+    tbl.add_row(["\033[33m" + str(element) + "\033[0m", "\033[33m" + str(table.Step_I[i2]) + "\033[0m", "\033[33m" + str(table.Y_I[i2]) + "\033[0m", "\033[33m" + str(table.Y_A[i]) + "\033[0m", "\033[33m" + str(abs(table.Y_I[i2] - table.Y_A[i])) + "\033[0m"])
 print(tbl)
 
-am = accurate_method(1, 0.2, 0, 0.01)
+am = accurate_method(x_0(), y_0(), to(), 0.01)
 drawing.Y_A.append(am.y)
 drawing.X_A.append(am.x)
 while (am.delta() >= 0.000001):
