@@ -5,8 +5,8 @@ import matplotlib.pyplot as plt
 
 class accurate_method:
 
-    def __init__(self, x_0, y_0, to):
-        self.h = 0.01
+    def __init__(self, x_0, y_0, to, h):
+        self.h = h
         self.to = to
         self.x = float(x_0)
         self.y = float(y_0)
@@ -24,9 +24,9 @@ class accurate_method:
         print(self.h, self.x, self.y)
 
     def function(self, x, y):
-        # return float(1.2*pow(x, 3) + 3.1*x*y - 2.2)
+        return float(1.2*pow(x, 3) + 3.1*x*y - 2.2)
         # return float(0.9*x*y + 3.5*y - 2.1)
-        return float(x*y)
+        # return float(x*y)
 
     def __fi_0(self, h):
         return h*self.function(self.x, self.y)
@@ -73,8 +73,8 @@ class accurate_method:
 
 class method_runge_kutta:
 
-    def __init__(self, x_0, y_0, to):
-        self.h = 0.01
+    def __init__(self, x_0, y_0, to, h):
+        self.h = h
         self.to = to
         self.x = float(x_0)
         self.y = float(y_0)
@@ -92,9 +92,9 @@ class method_runge_kutta:
         print(self.h, self.x, self.y)
 
     def function(self, x, y):
-        # return float(1.2*pow(x, 3) + 3.1*x*y - 2.2)
+        return float(1.2*pow(x, 3) + 3.1*x*y - 2.2)
         # return float(0.9*x*y + 3.5*y - 2.1)
-        return float(x*y)
+        # return float(x*y)
 
     def __fi_0(self, h):
         return h*self.function(self.x, self.y)
@@ -149,39 +149,43 @@ class table:
 
     def __init__(self):
         self.X_I = []
-        self.Step = []
+        self.Step_I = []
         self.Y_I = []
+        self.Error_I = []
+        self.X_A = []
+        self.Step_A = []
         self.Y_A = []
-        self.Error = []
+        self.Error_A = []
+
 
 # Инициализация нужных переменных
-mrk = method_runge_kutta(0, 1, 1)
-am = accurate_method(0, 1, 1)
+mrk = method_runge_kutta(1, 0.2, 0, 0.5)
+am = accurate_method(1, 0.2, 0, 0.5)
 table = table()
 drawing = drawing()
 tbl = PrettyTable()
 
-tbl.field_names = ["\033[36mX\033[0m", "\033[36mШаг\033[0m", "\033[36mНеточный Y\033[0m", "\033[36mТочный Y\033[0m", "\033[36mПогрешность\033[0m"]
-tbl.add_row(["\033[33m" + str(mrk.x) + "\033[0m", "\033[33m" + str(mrk.h) + "\033[0m", "\033[33m" + str(mrk.y) + "\033[0m", "\033[33m" + str(mrk.y) + "\033[0m", "\033[33m0\033[0m"])
+tbl.field_names = ["\033[36mX\033[0m", "\033[36mШаг\033[0m", "\033[36mНеточный Y\033[0m"]
+tbl.add_row(["\033[33m" + str(mrk.x) + "\033[0m", "\033[33m" + str(mrk.h) + "\033[0m", "\033[33m" + str(mrk.y) + "\033[0m"])
 
 drawing.Y_I.append(mrk.y)
 drawing.X_I.append(mrk.x)
-# while (mrk.delta() >= 0.000001):
-#     if mrk.h > mrk.delta():
-#         mrk.h = mrk.delta()
-#     if abs(mrk.epsilon_h2()) > mrk.epsilon:
-#         mrk.h = mrk.h / 2
-#         continue
-#     mrk.y = mrk.y_i(mrk.h)
-#     mrk.x = mrk.combinate(mrk.x, mrk.h)
-#     drawing.Y_I.append(mrk.y)
-#     drawing.X_I.append(mrk.x)
-#     table.X_I.append(mrk.x)
-#     table.Step.append(mrk.h)
-#     table.Y_I.append(mrk.y)
-#     # tbl.add_row(["\033[33m" + str(mrk.x) + "\033[0m", "\033[33m" + str(mrk.h) + "\033[0m", "\033[33m" + str(mrk.y) + "\033[0m", "", ""])
-#     if abs(mrk.epsilon_h() <= mrk.epsilon):
-#         mrk.h = mrk.h * 2
+while (mrk.delta() >= 0.000001):
+    if mrk.h > mrk.delta():
+        mrk.h = mrk.delta()
+    if abs(mrk.epsilon_h2()) > mrk.epsilon:
+        mrk.h = mrk.h / 2
+        continue
+    mrk.y = mrk.y_i(mrk.h)
+    mrk.x = mrk.combinate(mrk.x, mrk.h)
+    drawing.Y_I.append(mrk.y)
+    drawing.X_I.append(mrk.x)
+    table.X_I.append(mrk.x)
+    table.Step_I.append(mrk.h)
+    table.Y_I.append(mrk.y)
+    # tbl.add_row(["\033[33m" + str(mrk.x) + "\033[0m", "\033[33m" + str(mrk.h) + "\033[0m", "\033[33m" + str(mrk.y) + "\033[0m", "", ""])
+    if abs(mrk.epsilon_h() <= mrk.epsilon):
+        mrk.h = mrk.h * 2
 
 # while (am.delta() >= 0.000001):
 #     if am.h > am.delta():
@@ -191,40 +195,52 @@ drawing.X_I.append(mrk.x)
 #         continue
 #     am.y = am.y_i(am.h)
 #     am.x = am.combinate(am.x, am.h)
+#     table.X_A.append(am.x)
+#     table.Step_A.append(am.h)
 #     table.Y_A.append(am.y)
 #     if abs(am.epsilon_h() <= am.epsilon):
 #         am.h = am.h * 2
 
-while (mrk.delta() >= 0.000001):
-    if mrk.h > mrk.delta():
-        mrk.h = mrk.delta()
-    mrk.y = mrk.y_i(mrk.h)
-    mrk.x = mrk.combinate(mrk.x, mrk.h)
-    drawing.Y_I.append(mrk.y)
-    drawing.X_I.append(mrk.x)
-    table.X_I.append(mrk.x)
-    table.Step.append(mrk.h)
-    table.Y_I.append(mrk.y)
+# am = accurate_method(1, 0.2, 0, 0.01)
+# while (am.delta() >= 0.000001):
+#     if am.h > am.delta():
+#         am.h = am.delta()
+#     am.y = am.y_i(am.h)
+#     am.x = am.combinate(am.x, am.h)
+#     drawing.Y_A.append(am.y)
+#     drawing.X_A.append(am.x)
 
 
-am = accurate_method(0, 1, 1)
-drawing.Y_A.append(am.y)
-drawing.X_A.append(am.x)
-while (am.delta() >= 0.000001):
-    if am.h > am.delta():
-        am.h = am.delta()
-    am.y = am.y_i(am.h)
-    am.x = am.combinate(am.x, am.h)
-    table.Y_A.append(am.y)
-    drawing.Y_A.append(am.y)
-    drawing.X_A.append(am.x)
+
+
 
 i = 0
 for element in table.X_I:
-    tbl.add_row(["\033[33m" + str(element) + "\033[0m", "\033[33m" + str(table.Step[i]) + "\033[0m", "\033[33m" + str(table.Y_I[i]) + "\033[0m", "\033[33m" + str(table.Y_A[i]) + "\033[0m", "\033[33m" + str(table.Y_I[i] - table.Y_A[i]) + "\033[0m"])
+    tbl.add_row(["\033[33m" + str(element) + "\033[0m", "\033[33m" + str(table.Step_I[i]) + "\033[0m", "\033[33m" + str(table.Y_I[i]) + "\033[0m"])
     i += 1
+print(tbl)
+tbl.clear_rows()
 
 
+
+tbl.field_names = ["\033[36mX\033[0m", "\033[36mШаг\033[0m", "\033[36mНеточный Y\033[0m"]
+tbl.add_row(["\033[33m1.0\033[0m", "\033[33m0.5\033[0m", "\033[33m0.2\033[0m"])     # Только для моей функции
+i = 0
+for element in table.X_A:
+    tbl.add_row(["\033[33m" + str(element) + "\033[0m", "\033[33m" + str(table.Step_A[i]) + "\033[0m", "\033[33m" + str(table.Y_A[i]) + "\033[0m"])
+    i += 1
+print(tbl)
+
+# am = accurate_method(1, 0.2, 0, 0.01)
+# drawing.Y_A.append(am.y)
+# drawing.X_A.append(am.x)
+# while (am.delta() >= 0.000001):
+#     if am.h > am.delta():
+#         am.h = am.delta()
+#     am.y = am.y_i(am.h)
+#     am.x = am.combinate(am.x, am.h)
+#     drawing.Y_A.append(am.y)
+#     drawing.X_A.append(am.x)
 
 plt.xlabel("X")
 plt.title("Графики приближенного и точного решения")
@@ -235,5 +251,5 @@ plt.grid(True)
 plt.legend()
 
 
-print(tbl)
+
 plt.show()
