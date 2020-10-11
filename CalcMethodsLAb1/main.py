@@ -212,7 +212,7 @@ tbl.clear_rows()
 
 
 tbl.field_names = ["\033[36mX\033[0m", "\033[36mШаг\033[0m", "\033[36mНеточный Y\033[0m"]
-tbl.add_row(["\033[33m1.0\033[0m", "\033[33m0.5\033[0m", "\033[33m0.2\033[0m"])     # Только для моей функции
+tbl.add_row(["\033[33m" + str(x_0()) + "\033[0m", "\033[33m" + str(h()) + "\033[0m", "\033[33m" + str(y_0()) + "\033[0m"])
 i = 0
 for element in table.X_A:
     tbl.add_row(["\033[33m" + str(element) + "\033[0m", "\033[33m" + str(table.Step_A[i]) + "\033[0m", "\033[33m" + str(table.Y_A[i]) + "\033[0m"])
@@ -220,25 +220,25 @@ for element in table.X_A:
 print(tbl)
 tbl = PrettyTable()
 
-am = accurate_method(x_0(), y_0(), to(), h())
+am = accurate_method(x_0(), y_0(), to(), 0.00001)
 while (am.delta() >= 0.000001):
     if am.h > am.delta():
         am.h = am.delta()
     am.y = am.y_i(am.h)
-    am.x = round(am.combinate(am.x, am.h), 2)
+    am.x = round(am.combinate(am.x, am.h), 6)
     table.X_A.append(am.x)
     table.Step_A.append(am.h)
     table.Y_A.append(am.y)
 
 tbl.field_names = ["\033[36mX\033[0m", "\033[36mШаг\033[0m", "\033[36mНеточный Y\033[0m", "\033[36mТочный Y\033[0m", "\033[36mПогрешность\033[0m"]
-
+tbl.add_row(["\033[33m" + str(x_0()) + "\033[0m", "\033[33m" + str(h()) + "\033[0m", "\033[33m" + str(y_0()) + "\033[0m", "\033[33m" + str(y_0()) + "\033[0m", "\033[33m" + str(0) + "\033[0m"])
 for element in table.X_I:
     i = table.X_A.index(element)
     i2 = table.X_I.index(element)
     tbl.add_row(["\033[33m" + str(element) + "\033[0m", "\033[33m" + str(table.Step_I[i2]) + "\033[0m", "\033[33m" + str(table.Y_I[i2]) + "\033[0m", "\033[33m" + str(table.Y_A[i]) + "\033[0m", "\033[33m" + str(abs(table.Y_I[i2] - table.Y_A[i])) + "\033[0m"])
 print(tbl)
 
-am = accurate_method(x_0(), y_0(), to(), 0.01)
+am = accurate_method(x_0(), y_0(), to(), 0.001)
 drawing.Y_A.append(am.y)
 drawing.X_A.append(am.x)
 while (am.delta() >= 0.000001):
