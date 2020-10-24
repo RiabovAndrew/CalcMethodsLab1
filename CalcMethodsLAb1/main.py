@@ -143,6 +143,8 @@ class drawing(method_runge_kutta):
     def __init__(self):
         self.X_I = []
         self.Y_I = []
+        self.X_F = []
+        self.Y_F = []
         self.X_A = []
         self.Y_A = []
 
@@ -161,6 +163,7 @@ class table:
 # Инициализация нужных переменных
 mrk = method_runge_kutta(x_0(), y_0(), to(), h())
 am = accurate_method(x_0(), y_0(), to(), h())
+mrk_fixed = method_runge_kutta(x_0(), y_0(), to(), 0.2)
 table = table()
 drawing = drawing()
 tbl = PrettyTable()
@@ -237,6 +240,8 @@ for element in table.X_I:
     i2 = table.X_I.index(element)
     tbl.add_row(["\033[33m" + str(element) + "\033[0m", "\033[33m" + str(table.Step_I[i2]) + "\033[0m", "\033[33m" + str(table.Y_I[i2]) + "\033[0m", "\033[33m" + str(table.Y_A[i]) + "\033[0m", "\033[33m" + str(abs(table.Y_I[i2] - table.Y_A[i])) + "\033[0m"])
 print(tbl)
+tbl.clear_rows()
+tbl = PrettyTable()
 
 am = accurate_method(x_0(), y_0(), to(), 0.001)
 drawing.Y_A.append(am.y)
@@ -249,9 +254,33 @@ while (am.delta() >= 0.000001):
     drawing.Y_A.append(am.y)
     drawing.X_A.append(am.x)
 
+table.X_I.clear()
+table.Step_I.clear()
+table.Y_I.clear()
+while (mrk_fixed.delta() >= 0.000001):
+    if mrk_fixed.h > mrk_fixed.delta():
+        mrk_fixed.h = mrk_fixed.delta()
+    mrk_fixed.y = mrk_fixed.y_i(mrk_fixed.h)
+    mrk_fixed.x = mrk_fixed.combinate(mrk_fixed.x, mrk_fixed.h)
+    drawing.Y_F.append(mrk_fixed.y)
+    drawing.X_F.append(mrk_fixed.x)
+    table.X_I.append(mrk_fixed.x)
+    table.Step_I.append(mrk_fixed.h)
+    table.Y_I.append(mrk_fixed.y)
+
+
+tbl.field_names = ["\033[36mX\033[0m", "\033[36mШаг\033[0m", "\033[36mНеточный Y\033[0m"]
+tbl.add_row(["\033[33m" + str(x_0()) + "\033[0m", "\033[33m" + str(0.2) + "\033[0m", "\033[33m" + str(y_0()) + "\033[0m"])
+i = 0
+for element in table.X_I:
+    tbl.add_row(["\033[33m" + str(element) + "\033[0m", "\033[33m" + str(table.Step_I[i]) + "\033[0m", "\033[33m" + str(table.Y_I[i]) + "\033[0m"])
+    i += 1
+print(tbl)
+
 plt.xlabel("X")
 plt.title("Графики приближенного и точного решения")
 plt.plot(drawing.X_I, drawing.Y_I, 'r-o', label="Integral", linewidth=1.0)
+plt.plot(drawing.X_F, drawing.Y_F, 'g-x', label="Integral Fixed", linewidth=2.0)
 plt.plot(drawing.X_A, drawing.Y_A, 'b', label="Accurate", linewidth=1.0)
 plt.ylabel("F[x, f(x)]")
 plt.grid(True)
